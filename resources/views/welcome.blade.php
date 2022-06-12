@@ -31,7 +31,7 @@
                         <h5 class="modal-title" id="exampleModalLabel">Create Product</h5>
                     </div>
                     <div class="modal-body">
-                        <form action="javascript:void(0)">
+                        <form action="javascript:void(0)" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Product Name</label>
@@ -74,25 +74,25 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
     <script>
-        function alldata() {
+        function alldata(){
             $.ajax({
                 type: "GET",
                 url: "{{route('product.index')}}",
                 dataType: "json",
 
                 success: function (response) {
-                    let data = "";
+                    let data ="";
                     $.each(response, function (key, value) {
                         data = data + "<tr>"
-                        data = data + "<td>" + value.id + "</td>"
-                        data = data + "<td>" + value.productname + "</td>"
-                        data = data + "<td>" + value.productprice + "</td>"
-                        data = data + "<td>" + value.productqty + "</td>"
-                        data = data + "<td>"
-                        data = data + "<button class='btn btn-primary mr-5'>Edit</button>"
-                        data = data + "<button class='btn btn-danger ms-5'>Delete</button>"
-                        data = data + "</td>"
-                        data = data + "</tr>"
+                            data = data + "<td>"+value.id+"</td>"
+                            data = data + "<td>"+value.productname+"</td>"
+                            data = data + "<td>"+value.productprice+"</td>"
+                            data = data + "<td>"+value.productqty+"</td>"
+                            data = data + "<td>"
+                                data = data + "<button class='btn btn-primary mr-5'>Edit</button>"
+                                data = data + "<button class='btn btn-danger ms-5'>Delete</button>"
+                                data = data + "</td>"
+                            data= data + "</tr>"
                     });
                     $('tbody').html(data);
                 }
@@ -100,32 +100,24 @@
         }
         alldata();
         $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        function storedata() {
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        function storedata(){
             let productname = $('#productname').val();
             let productprice = $('#productprice').val();
             let productqty = $('#productqty').val();
             $.ajax({
                 type: "POST",
                 url: "{{route('product.store')}}",
-                data: {
-                    _token: "{{csrf_token()}}",
-                    productname: productname,
-                    productprice: productprice,
-                    productqty: productqty
-                },
+                data: {productname:productname,productprice:productprice,productqty:productqty},
                 dataType: "json",
                 success: function (response) {
-                    alldata();
-                    console.log("successfully");
+                    console.log("success");
                 }
             });
         }
-
     </script>
 </body>
 
