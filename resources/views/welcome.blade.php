@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Laravel Ajax CRUD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -31,11 +29,11 @@
                         <h5 class="modal-title" id="exampleModalLabel">Create Product</h5>
                     </div>
                     <div class="modal-body">
-                        <form action="javascript:void(0)" method="POST" enctype="multipart/form-data">
+                        <form method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="productname" aria-describedby="emailHelp">
+                                <input type="text" class="form-control" id="productname">
                             </div>
                             <div class="mb-3">
                                 <label for="exampleInputPassword1" class="form-label">Product Price</label>
@@ -99,22 +97,18 @@
             });
         }
         alldata();
-        $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
         function storedata(){
             let productname = $('#productname').val();
             let productprice = $('#productprice').val();
             let productqty = $('#productqty').val();
+            // console.log(productname);
             $.ajax({
                 type: "POST",
                 url: "{{route('product.store')}}",
-                data: {productname:productname,productprice:productprice,productqty:productqty},
+                data: {_token:"{{csrf_token()}}",productname:productname,productprice:productprice,productqty:productqty},
                 dataType: "json",
                 success: function (response) {
-                    console.log("success");
+                    console.log(response);
                 }
             });
         }
