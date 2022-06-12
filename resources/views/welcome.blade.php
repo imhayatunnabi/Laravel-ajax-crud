@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Laravel Ajax CRUD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -72,39 +74,50 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
     <script>
-        function alldata(){
+        function alldata() {
             $.ajax({
                 type: "GET",
                 url: "{{route('product.index')}}",
                 dataType: "json",
 
                 success: function (response) {
-                    let data ="";
+                    let data = "";
                     $.each(response, function (key, value) {
                         data = data + "<tr>"
-                            data = data + "<td>"+value.id+"</td>"
-                            data = data + "<td>"+value.productname+"</td>"
-                            data = data + "<td>"+value.productprice+"</td>"
-                            data = data + "<td>"+value.productqty+"</td>"
-                            data = data + "<td>"
-                                data = data + "<button class='btn btn-primary mr-5'>Edit</button>"
-                                data = data + "<button class='btn btn-danger ms-5'>Delete</button>"
-                                data = data + "</td>"
-                            data= data + "</tr>"
+                        data = data + "<td>" + value.id + "</td>"
+                        data = data + "<td>" + value.productname + "</td>"
+                        data = data + "<td>" + value.productprice + "</td>"
+                        data = data + "<td>" + value.productqty + "</td>"
+                        data = data + "<td>"
+                        data = data + "<button class='btn btn-primary mr-5'>Edit</button>"
+                        data = data + "<button class='btn btn-danger ms-5'>Delete</button>"
+                        data = data + "</td>"
+                        data = data + "</tr>"
                     });
                     $('tbody').html(data);
                 }
             });
         }
         alldata();
-        function storedata(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        function storedata() {
             let productname = $('#productname').val();
             let productprice = $('#productprice').val();
             let productqty = $('#productqty').val();
             $.ajax({
                 type: "POST",
                 url: "{{route('product.store')}}",
-                data: {"_token":"{{csrf_token()}}",productname:productname,productprice:productprice,productqty:productqty},
+                data: {
+                    _token: "{{csrf_token()}}",
+                    productname: productname,
+                    productprice: productprice,
+                    productqty: productqty
+                },
                 dataType: "json",
                 success: function (response) {
                     alldata();
@@ -112,6 +125,7 @@
                 }
             });
         }
+
     </script>
 </body>
 
