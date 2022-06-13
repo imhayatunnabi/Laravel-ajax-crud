@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Laravel Ajax CRUD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -88,7 +89,7 @@
                             data = data + "<td>"+value.productqty+"</td>"
                             data = data + "<td>"
                                 data = data + "<button class='btn btn-primary mr-5'>Edit</button>"
-                                data = data + "<button class='btn btn-danger ms-5'>Delete</button>"
+                                data = data + "<button class='btn btn-danger   ms-5' onclick='deletedata("+value.id+")'>Delete</button>"
                                 data = data + "</td>"
                             data= data + "</tr>"
                     });
@@ -97,6 +98,11 @@
             });
         }
         alldata();
+        $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+    });
         function storedata(){
             let productname = $('#productname').val();
             let productprice = $('#productprice').val();
@@ -108,10 +114,22 @@
                 data: {_token:"{{csrf_token()}}",productname:productname,productprice:productprice,productqty:productqty},
                 dataType: "json",
                 success: function (response) {
-                    console.log(response);
+                    alldata();
                 }
             });
         }
+function deletedata(id){
+    $.ajax({
+        type: "DELETE",
+        url: "/product/"+id,
+        dataType: "json",
+        success: function (response) {
+            console.log("success");
+            alldata();
+        }
+    });
+}
+
     </script>
 </body>
 
